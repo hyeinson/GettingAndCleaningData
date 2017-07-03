@@ -10,7 +10,7 @@ setwd('~/data/UCI HAR Dataset')
 if ('dplyr' %in% rownames(installed.packages()) == FALSE) {install.packages('dplyr')}
 library(dplyr)
 
-### Name variables ###
+### Name variables (data frames) ###
 
 features = read.table('~/data/UCI HAR Dataset/features.txt')
 act_labels = read.table('~/data/UCI HAR Dataset/activity_labels.txt')
@@ -39,29 +39,30 @@ new_set = rbind(train_set, test_set)
 mean_index = grep('mean[()]', features$V2)
 std_index = grep('std', features$V2)
 
-mean_measurements = new_set[, mean_index]
-std_measurements = new_set[, std_index]
-
-mean_std_measurements = cbind(mean_measurements, std_measurements)
+mean_std_measurements = new_set[, c(mean_index, std_index)]
 
 ### 3
 train_labels = mutate(train_labels, activity_names = act_labels$V2[V1])
 test_labels = mutate(test_labels, activity_names = act_labels$V2[V1])
-comb_labels = rbind(train_labels, test_labels)
-new_set_wlabels = cbind(activity_names = comb_labels$activity_names, mean_std_measurements)
+comb_act_labels = rbind(train_labels, test_labels)
+
+comb_subjects = rbind(sub_train, sub_test)
+
+new_set_wlabels = cbind('Activity Names' = comb_act_labels$activity_names, 'Subject Names' = comb_subjects$V1, mean_std_measurements)
 
 ### 4
 names(new_set_wlabels) = gsub('V','', names(new_set_wlabels))
 
-for (i in seq(1:(length(new_set_wlabels)-1))) {
-  names(new_set_wlabels)[i+1] = as.character(features$V2[as.numeric(names(new_set_wlabels)[i+1])])
+for (i in seq(1:(length(new_set_wlabels)-2))) {
+  names(new_set_wlabels)[i+2] = as.character(features$V2[as.numeric(names(new_set_wlabels)[i+2])])
 }
 
 ### 5
 
-final_dataset = new_set_wlabels[,2:length(new_set_wlabels)] %>% group_by(new_set_wlabels$activity_names) %>% summarise_all(funs(mean))
+final_dataset = new_set_wlabels[,3:length(new_set_wlabels)] %>% group_by(new_set_wlabels$`Activity Names`, new_set_wlabels$`Subject Names`) %>% summarise_all(funs(mean))
 names(final_dataset)[1] = 'Activity Names'
-  
+names(final_dataset)[2] = 'Subject Names'  
+
 ### Export as .txt file ###
 write.table(final_dataset, file = '~/data/GettingAndCleaningDataProject.txt', row.names = FALSE)
   
