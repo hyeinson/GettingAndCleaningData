@@ -44,11 +44,13 @@ std_index: list of indices that contains "std()" from the data frame 'features' 
 
 mean_std_measurements: a subset of data frame 'new_set' that only contains the measurements on the mean and standard deviation for each measurement
 
-comb_labels: combines 'train_labels' and 'test_labels' by rows; each observation matches that of 'new_set' and 'mean_std_measurements'
+comb_act_labels: combines 'train_labels' and 'test_labels' by rows; each observation matches that of 'new_set' and 'mean_std_measurements'
 
-new_set_wlabels: combines the second column of 'comb_labels' with 'mean_std_measurements' by columns
+comb_subjects = combines 'sub_train' and 'sub_test' by rowl seach observation matches that of 'new_set', 'mean_std_measurements', and 'comb_act_labels'
 
-final_dataset: a tidy form of data frame of 'new_set_wlabels'; summarises (averages) each variable for each activity and each subject
+new_set_wlabels: combines the second column of 'comb_labels' (column named 'Activity Names'), 'comb_subjects' (column named 'Subject Names' and 'mean_std_measurements' by columns
+
+final_dataset: a tidy form of data frame of 'new_set_wlabels'; summarises (averages) each variable for each activity and each subject; The first column lists the name of activity; The second column lists the name (or the number) of the subjects.
 
 
 **Transformations**
@@ -63,6 +65,10 @@ The names of most columns of 'new_set_wlabels' were in the form of 'V###' where 
 The letter 'V' is removed from each where applicable in order to make the column names numerical. 
 Then, each numerical column name was searched through the 'features' data frame to make each column name more descriptive.
 
-The first column of 'final_dataset' was changed to 'Activity Names'
+The first column of 'final_dataset' was changed to 'Activity Names' and the second column was changed to 'Subject Names'.
 
 The 'final_dataset' was exported as a .txt file ('~/data/GettingAndCleaningDataProject.txt')
+
+
+
+
